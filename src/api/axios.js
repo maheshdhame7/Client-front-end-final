@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "/api",
+  baseURL: import.meta.env.VITE_API_URL || "/api",
 });
 
 // Attach JWT token to every request
@@ -20,7 +20,8 @@ API.interceptors.response.use(
     if (err.response?.status === 401) {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
-      window.location.href = "/login";
+      const base = import.meta.env.BASE_URL || "/";
+      window.location.href = `${base}login`.replace(/\/{2,}/g, "/");
     }
     return Promise.reject(err);
   }
